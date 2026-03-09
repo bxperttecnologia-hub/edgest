@@ -1,0 +1,41 @@
+{
+  "name": "centro-gestao-backend",
+  "version": "1.0.0",
+  "description": "full project centro-gestao-backend",
+  "main": "index.js",
+  "author": "centro-gestao-backend",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "nodemon ./src/index.js",
+    "dev": "nodemon ./src/index.js"
+  },
+  "dependencies": {
+    "axios": "^1.10.0",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^2.2.0",
+    "centro-gestao-backend": "file:",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.5.0",
+    "dropbox": "^10.34.0",
+    "express": "^5.1.0",
+    "i18n": "^0.15.1",
+    "jsonwebtoken": "^9.0.2",
+    "moment-timezone": "^0.5.48",
+    "multer": "^2.0.2",
+    "mysql": "^2.18.1",
+    "node-cron": "^4.2.1",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^7.0.3",
+    "nodemailer-smtp-transport": "^2.7.4",
+    "nodemon": "^3.1.9",
+    "open": "^10.2.0",
+    "pdfkit": "^0.17.2",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
+  }
+}

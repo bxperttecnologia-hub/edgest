@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 220 50% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 50% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 50% 10%;
+
+    /* 💙 Primário: azul médio */
+    --primary: 217 90% 54%;
+    --primary-foreground: 0 0% 100%;
+
+    /* 💙 Secundário: azul suave */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 220 50% 15%;
+
+    /* 💙 Tons neutros/muted */
+    --muted: 210 40% 96%;
+    --muted-foreground: 220 15% 45%;
+
+    /* 💙 Acento: azul claro */
+    --accent: 210 40% 90%;
+    --accent-foreground: 220 50% 15%;
+
+    /* ❤️ Destrutivo */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Bordas e inputs */
+    --border: 215 25% 85%;
+    --input: 215 25% 85%;
+    --ring: 217 90% 54%;
+
+    --radius: 0.75rem;
+
+    /* 💙 Gradiente e sliders */
+    --slider-bg: 217 65% 70%;
+    --slider-bg-end: 217 45% 80%;
+
+    /* 💙 Sidebar */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 220 30% 25%;
+    --sidebar-primary: 217 85% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 35% 92%;
+    --sidebar-accent-foreground: 220 30% 25%;
+    --sidebar-border: 215 25% 85%;
+    --sidebar-ring: 217 90% 54%;
+  }
+
+  .dark {
+    --background: 220 50% 10%;
+    --foreground: 210 40% 98%;
+
+    --card: 220 50% 10%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 220 50% 10%;
+    --popover-foreground: 210 40% 98%;
+
+    /* 💙 Primário escuro */
+    --primary: 217 90% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217 35% 20%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 35% 20%;
+    --muted-foreground: 215 20% 70%;
+
+    --accent: 217 45% 35%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 35% 20%;
+    --input: 217 35% 20%;
+    --ring: 217 90% 60%;
+
+    /* 💙 Slider */
+    --slider-bg: 217 55% 70%;
+    --slider-bg-end: 217 85% 45%;
+
+    /* 💙 Sidebar */
+    --sidebar-background: 217 35% 12%;
+    --sidebar-foreground: 210 40% 95%;
+    --sidebar-primary: 217 90% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 35% 20%;
+    --sidebar-accent-foreground: 210 40% 95%;
+    --sidebar-border: 217 35% 20%;
+    --sidebar-ring: 217 90% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}

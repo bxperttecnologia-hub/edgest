@@ -1,0 +1,219 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 221 83% 53%;
+    --primary-hover: 221 83% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --success: 142 76% 36%;
+    --success-light: 142 69% 95%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-light: 38 100% 97%;
+    --warning-foreground: 25 95% 15%;
+
+    --danger: 0 84% 60%;
+    --danger-light: 0 100% 97%;
+    --danger-foreground: 0 0% 100%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 217 92% 96%;
+    --accent-foreground: 221 83% 53%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
+
+    --radius: 0.5rem;
+
+    --gradient-primary: linear-gradient(135deg, hsl(221 83% 53%), hsl(250 84% 60%));
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(158 64% 42%));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(210 40% 98%));
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 19% 20%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 19% 15%;
+    --sidebar-ring: 221 83% 53%;
+    
+  }
+
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+
+    --card: 217 19% 15%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 217 19% 15%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 221 83% 53%;
+    --primary-hover: 221 83% 58%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217 19% 20%;
+    --secondary-foreground: 210 40% 98%;
+
+    --success: 142 76% 36%;
+    --success-light: 142 76% 15%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-light: 38 92% 15%;
+    --warning-foreground: 0 0% 100%;
+
+    --danger: 0 84% 60%;
+    --danger-light: 0 84% 15%;
+    --danger-foreground: 0 0% 100%;
+
+    --muted: 217 19% 20%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 217 19% 20%;
+    --accent-foreground: 221 83% 53%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 217 19% 20%;
+    --input: 217 19% 20%;
+    --ring: 221 83% 53%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(221 83% 53%), hsl(250 84% 60%));
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(158 64% 42%));
+    --gradient-card: linear-gradient(180deg, hsl(217 19% 15%), hsl(217 19% 18%));
+
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 19% 20%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 19% 15%;
+    --sidebar-ring: 221 83% 53%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .calendar-day {
+    @apply min-h-[100px] lg:min-h-[120px] border-r border-b border-border p-1 cursor-pointer transition-colors duration-150;
+  }
+
+  .calendar-day:hover {
+    @apply bg-calendar-hover;
+  }
+
+  .calendar-day.today {
+    @apply bg-calendar-today;
+  }
+
+  .calendar-day.other-month {
+    @apply opacity-40;
+  }
+
+  .event-chip {
+    @apply text-xs px-2 py-1 rounded-md mb-1 truncate cursor-pointer transition-all duration-150 font-medium;
+  }
+
+  .event-chip:hover {
+    @apply opacity-90 scale-[1.02];
+  }
+
+  .event-chip.blue {
+    @apply bg-[hsl(var(--event-blue))] text-white;
+  }
+
+  .event-chip.green {
+    @apply bg-[hsl(var(--event-green))] text-white;
+  }
+
+  .event-chip.red {
+    @apply bg-[hsl(var(--event-red))] text-white;
+  }
+
+  .event-chip.yellow {
+    @apply bg-[hsl(var(--event-yellow))] text-foreground;
+  }
+
+  .event-chip.purple {
+    @apply bg-[hsl(var(--event-purple))] text-white;
+  }
+
+  .event-chip.orange {
+    @apply bg-[hsl(var(--event-orange))] text-white;
+  }
+
+  .aside-panel {
+    @apply fixed right-0 top-0 h-full w-[400px] bg-card border-l border-border shadow-xl transform transition-transform duration-300 ease-in-out z-50;
+  }
+
+  .aside-panel.hidden {
+    @apply translate-x-full;
+  }
+
+  .dragging {
+    @apply opacity-50 scale-95;
+  }
+
+  .drop-target {
+    @apply bg-primary/10 border-2 border-dashed border-primary;
+  }
+}
+
+@layer utilities {
+  .bg-calendar-today {
+    background-color: hsl(var(--calendar-today));
+  }
+
+  .bg-calendar-hover {
+    background-color: hsl(var(--calendar-hover));
+  }
+
+  .bg-calendar-selected {
+    background-color: hsl(var(--calendar-selected));
+  }
+}

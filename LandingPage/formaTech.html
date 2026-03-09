@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="pt-AO">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FormaTech Angola — Capacitação em Desenvolvimento & Data</title>
+  <meta name="description" content="Programa de capacitação em programação, mobile, backend, APIs e ciência de dados. Formação prática, mentoria e projetos reais." />
+  <!-- Tailwind CDN (boa para protótipos). Em produção, compila Tailwind localmente. -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Pequenas customizações */
+    .gradient-hero {
+      background: linear-gradient(135deg,#0f172a 0%, #0ea5a4 60%);
+    }
+  </style>
+</head>
+<body class="antialiased text-slate-800 bg-slate-50">
+
+  <!-- NAVBAR -->
+  <header class="bg-white/60 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-emerald-400 to-teal-500 flex items-center justify-center text-white font-bold">FT</div>
+        <div>
+          <a href="#" class="text-lg font-semibold text-slate-900">FormaTech Angola</a>
+          <div class="text-sm text-slate-500">Capacitação em Desenvolvimento & Data</div>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a href="#cursos" class="hover:text-slate-900">Cursos</a>
+        <a href="#metodologia" class="hover:text-slate-900">Metodologia</a>
+        <a href="#projeto" class="hover:text-slate-900">Projeto Final</a>
+        <a href="#contacto" class="hover:text-slate-900">Contacto</a>
+        <a href="#inscrever" class="bg-teal-500 text-white px-4 py-2 rounded-md shadow hover:bg-teal-600">Inscrever</a>
+      </nav>
+
+      <div class="md:hidden">
+        <button id="menuBtn" class="p-2 rounded-md bg-slate-100">
+          <!-- simple hamburger -->
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M3 5h14M3 10h14M3 15h14" stroke="#0f172a" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <!-- mobile menu -->
+    <div id="mobileMenu" class="md:hidden hidden px-6 pb-4">
+      <a href="#cursos" class="block py-2 border-b">Cursos</a>
+      <a href="#metodologia" class="block py-2 border-b">Metodologia</a>
+      <a href="#projeto" class="block py-2 border-b">Projeto Final</a>
+      <a href="#contacto" class="block py-2">Contacto</a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="gradient-hero text-white">
+    <div class="max-w-7xl mx-auto px-6 py-20 lg:py-28 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <p class="inline-flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full text-sm mb-4">🎯 Programa Intensivo • 420 horas • Certificação Profissional</p>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">FormaTech Angola — Formação prática em Desenvolvimento & Ciência de Dados</h1>
+        <p class="mt-6 text-slate-100 max-w-xl">Aprende as competências reais exigidas pelo mercado: JavaScript, React, Next.js, Node, React Native, Python, Data Science, SQL e muito mais — com projetos, mentoria e colocação profissional.</p>
+
+        <div class="mt-8 flex gap-3">
+          <a href="#inscrever" class="bg-white text-teal-700 px-5 py-3 rounded-md font-semibold shadow hover:brightness-95">Inscrever-me</a>
+          <a href="#cursos" class="border border-white/30 px-5 py-3 rounded-md hover:bg-white/10">Ver Cursos</a>
+        </div>
+
+        <div class="mt-8 flex gap-6 text-sm text-white/90">
+          <div>
+            <div class="text-2xl font-bold">100%</div>
+            <div class="opacity-80">Hands-on</div>
+          </div>
+          <div>
+            <div class="text-2xl font-bold">Mentoria</div>
+            <div class="opacity-80">Profissionais locais & internacionais</div>
+          </div>
+          <div>
+            <div class="text-2xl font-bold">Portfólio</div>
+            <div class="opacity-80">Projetos reais</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white/5 p-6 rounded-2xl shadow-inner">
+        <!-- Card com resumo rápido -->
+        <div class="grid grid-cols-1 gap-4">
+          <div class="bg-white/6 rounded-lg p-4">
+            <h3 class="text-white font-semibold">Quem deve participar</h3>
+            <p class="mt-2 text-slate-100 text-sm">Jovens técnicos, estudantes de TI, profissionais que queiram migrar para desenvolvimento ou análise de dados.</p>
+          </div>
+
+          <div class="bg-white/6 rounded-lg p-4">
+            <h3 class="text-white font-semibold">Objetivo do programa</h3>
+            <p class="mt-2 text-slate-100 text-sm">Formar profissionais prontos para o mercado com portfólio e certificação.</p>
+          </div>
+
+          <div class="bg-white/6 rounded-lg p-4 flex items-center justify-between">
+            <div>
+              <div class="text-white font-medium">Duração total</div>
+              <div class="text-slate-100 text-lg font-bold mt-1">~420 horas</div>
+            </div>
+            <div class="text-sm text-slate-200">
+              Formação modular • Pagamento por módulo disponível
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CURSOS / CARDS -->
+  <section id="cursos" class="max-w-7xl mx-auto px-6 py-16">
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-bold">Nossos Cursos</h2>
+      <p class="text-slate-600 mt-2 max-w-2xl mx-auto">Percurso completo — do raciocínio lógico à entrega de projetos, com foco em empregabilidade.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Card exemplo - repetir para cada curso -->
+      <!-- Lógica -->
+      <article class="bg-white rounded-xl shadow p-6">
+        <div class="flex items-start gap-4">
+          <div class="bg-emerald-50 p-3 rounded-lg">
+            <!-- icon -->
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2v20" stroke="#059669" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M5 7h14" stroke="#059669" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold">Lógica de Programação & Algoritmos</h3>
+            <p class="text-sm text-slate-500 mt-1">20h • Iniciante</p>
+          </div>
+        </div>
+        <p class="mt-4 text-slate-600 text-sm">Base essencial para pensar como programador: algoritmos, estruturas condicionais, loops, funções e exercícios práticos.</p>
+        <ul class="mt-4 text-sm text-slate-600 space-y-1">
+          <li>• Pensamento lógico</li>
+          <li>• Pseudocódigo e fluxogramas</li>
+          <li>• Exercícios orientados a problemas reais</li>
+        </ul>
+      </article>
+
+      <!-- JavaScript -->
+      <article class="bg-white rounded-xl shadow p-6">
+        <div class="flex items-start gap-4">
+          <div class="bg-yellow-50 p-3 rounded-lg">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12h18" stroke="#ca8a04" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M12 3v18" stroke="#ca8a04" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold">JavaScript Completo (Front & Back)</h3>
+            <p class="text-sm text-slate-500 mt-1">60h • Intermédio</p>
+          </div>
+        </div>
+        <p class="mt-4 text-slate-600 text-sm">Do ES6 ao Node.js — cria aplicações completas, interativas e APIs robustas.</p>
+        <ul class="mt-4 text-sm text-slate-600 space-y-1">
+          <li>• DOM, eventos e SPA</li>
+          <li>• Async/Await • Promises</li>
+          <li>• Node.js + Express • Integração com BD</li>
+        </ul>
+      </article>
+
+      <!-- React -->
+      <article class="bg-white rounded-xl shadow p-6">
+        <div class="flex items-start gap-4">
+          <div class="bg-sky-50 p-3 rounded-lg">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2c2 3 6 3 8 0" stroke="#0ea5e9" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M12 22c-2-3-6-3-8 0" stroke="#0ea5e9" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold">React.js — Interfaces Modernas</h3>
+            <p class="text-sm text-slate-500 mt-1">40h • Intermédio</p>
+          </div>
+        </div>
+        <p class="mt-4 text-slate-600 text-sm">Cria UIs escaláveis com componentes, hooks e gerenciamento de estado — ideal para aplicações web modernas.</p>
+        <ul class="mt-4 text-sm text-slate-600 space-y-1">
+          <li>• Componentes & JSX</li>
+          <li>• Hooks, Context API e Redux</li>
+          <li>• Testes e otimização</li>
+        </ul>
+      </article>
+
+      <!-- Next.js -->
+      <article class="bg-white rounded-xl shadow p-6">
+        <div class="flex items-start gap-4">
+          <div class="bg-indigo-50 p-3 rounded-lg">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2l6 6-6 6-6-6 6-6z" stroke="#6366f1" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold">Next.js — Apps Otimizadas</h3>
+            <p class="text-sm text-slate-500 mt-1">30h • Avançado</p>
+          </div>
+        </div>
+        <p class="mt-4 text-slate-600 text-sm">SSR, SSG e rotas API — desenvolve aplicações profissionais com foco em performance e SEO.</p>
+      </article>
+
+      <!-- APIs -->
+      <article class="bg-white rounded-xl shadow p-6">
+        <div class="flex items-start gap-4">
+          <div class="bg-rose-50 p-3 rounded-lg">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path d="M3 6h18M3 12h18M3 18h18" stroke="#fb7185" stroke-width="1.2"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold">APIs & REST</h3>
+            <p class="text-sm text-slate-500 mt-1">40h • Intermédio</p>
+          </div>
+        </div>
+        <p class="mt-4 text-slate-600 text-sm">Aprende a criar APIs seguras, documentadas e escaláveis com autenticação e testes.</p>
+      </article>
+
+      <!-- Mobile -->
+      <article class="bg-white rounded-xl shadow p-6">
+        <div class="flex items-start gap-4">
+          <div class="bg-violet-50 p-3 rounded-lg">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <rect x="6" y="3" width="12" height="18" rx="2" stroke="#7c3aed" stroke-width="1.2"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold">React Native — Mobile</h3>
+            <p class="text-sm text-slate-500 mt-1">50h • Intermédio</p>
+          </div>
+        </div>
+        <p class="mt-4 text-slate-600 text-sm">Desenvolve apps multiplataforma e publica nas lojas com boa experiência de utilizador.</p>
+      </article>
+
+      <!-- Python Web -->
+      <article class="bg-white rounded-xl shadow p-6">
+        <div class="flex items-start gap-4">
+          <div class="bg-slate-100 p-3 rounded-lg">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path d="M4 4h16v16H4z" stroke="#111827" stroke-opacity="0.08" stroke-width="1.5"/>
+              <path d="M8 8h8v8H8z" stroke="#111827" stroke-opacity="0.08" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold">Python — Web & Microserviços</h3>
+            <p class="text-sm text-slate-500 mt-1">50h • Avançado</p>
+          </div>
+        </div>
+        <p class="mt-4 text-slate-600 text-sm">Flask & FastAPI para construir serviços rápidos e escaláveis, integração com bancos e testes automatizados.</p>
+      </article>
+
+      <!-- Data Science -->
+      <article class="bg-white rounded-xl shadow p-6">
+        <div class="flex items-start gap-4">
+          <div class="bg-amber-50 p-3 rounded-lg">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12h18" stroke="#f59e0b" stroke-width="1.5"/>
+              <path d="M12 3v18" stroke="#f59e0b" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold">Ciência de Dados & ML</h3>
+            <p class="text-sm text-slate-500 mt-1">60h • Avançado</p>
+          </div>
+        </div>
+        <p class="mt-4 text-slate-600 text-sm">Análise de dados, visualização e modelos preditivos com Python — transforma dados em decisões.</p>
+      </article>
+
+      <!-- SQL -->
+      <article class="bg-white rounded-xl shadow p-6">
+        <div class="flex items-start gap-4">
+          <div class="bg-cyan-50 p-3 rounded-lg">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <path d="M4 5h16v14H4z" stroke="#06b6d4" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold">SQL — Do Zero ao Avançado</h3>
+            <p class="text-sm text-slate-500 mt-1">40h • Intermédio</p>
+          </div>
+        </div>
+        <p class="mt-4 text-slate-600 text-sm">Domina consultas, joins, performance e administração de bases de dados relacionais.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Metodologia -->
+  <section id="metodologia" class="bg-white/80">
+    <div class="max-w-4xl mx-auto px-6 py-14 text-center">
+      <h2 class="text-2xl font-bold">Metodologia prática e orientada a resultados</h2>
+      <p class="mt-3 text-slate-600">A nossa abordagem combina teoria com prática em projetos reais, mentoria e avaliações por competências.</p>
+
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-slate-50 p-6 rounded-lg shadow">
+          <h3 class="font-semibold">Aulas Hands-on</h3>
+          <p class="text-sm text-slate-600 mt-2">Laboratórios, exercícios guiados e desafios semanais.</p>
+        </div>
+        <div class="bg-slate-50 p-6 rounded-lg shadow">
+          <h3 class="font-semibold">Mentoria & Code Reviews</h3>
+          <p class="text-sm text-slate-600 mt-2">Acompanhamento individual por profissionais experientes.</p>
+        </div>
+        <div class="bg-slate-50 p-6 rounded-lg shadow">
+          <h3 class="font-semibold">Portfólio & Colocação</h3>
+          <p class="text-sm text-slate-600 mt-2">Projetos reais para apresentar a empregadores e redes de parceria.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projeto Final -->
+  <section id="projeto" class="max-w-6xl mx-auto px-6 py-14">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <h2 class="text-3xl font-bold">Projeto Final Integrado</h2>
+        <p class="mt-4 text-slate-600">No final do programa, cada equipa desenvolve uma solução completa — web + mobile + API — entregue com documentação, testes e deploy.</p>
+
+        <ul class="mt-6 space-y-3 text-slate-600">
+          <li>• Planeamento e levantamento de requisitos</li>
+          <li>• Arquitetura (front + back + dados)</li>
+          <li>• Implementação, testes e deploy</li>
+          <li>• Apresentação final e avaliação por painel</li>
+        </ul>
+
+        <div class="mt-6 flex gap-3">
+          <a href="#inscrever" class="bg-teal-500 text-white px-4 py-2 rounded-md">Quero participar</a>
+          <a href="#contacto" class="border px-4 py-2 rounded-md">Falar com equipa</a>
+        </div>
+      </div>
+
+      <div class="bg-slate-50 p-6 rounded-2xl shadow">
+        <h3 class="font-semibold">Exemplos de Projetos</h3>
+        <ol class="mt-4 list-decimal ml-5 text-slate-600 space-y-2">
+          <li>Sistema de Gestão de Estudantes com Dashboard</li>
+          <li>Plataforma de Reservas Turísticas com App Mobile</li>
+          <li>Marketplace de Serviços com Integração de Pagamentos</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / Inscrições -->
+  <section id="inscrever" class="bg-teal-50">
+    <div class="max-w-4xl mx-auto px-6 py-12 text-center">
+      <h2 class="text-2xl font-bold">Inscrições Abertas</h2>
+      <p class="mt-3 text-slate-700">Vagas limitadas por turma para garantir atenção personalizada. Oferecemos opções de pagamento por módulo e bolsas parciais.</p>
+
+      <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#contacto" class="bg-teal-600 text-white px-6 py-3 rounded-md">Solicitar Info / Bolsa</a>
+        <a href="#contacto" class="border border-teal-600 text-teal-700 px-6 py-3 rounded-md">Contactar Vendas</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <footer id="contacto" class="bg-slate-900 text-slate-200">
+    <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div>
+        <h3 class="text-white text-lg font-semibold">FormaTech Angola</h3>
+        <p class="mt-2 text-slate-400">Capacitação em desenvolvimento, mobile e data — formação prática com mentoria e projetos reais.</p>
+        <p class="mt-4 text-sm text-slate-400">📍 Luanda, Angola</p>
+      </div>
+
+      <div>
+        <h4 class="font-semibold">Contactos</h4>
+        <ul class="mt-3 text-sm text-slate-400 space-y-2">
+          <li>✉️ info@formatechangola.com</li>
+          <li>📞 +244 9XX XXX XXX</li>
+          <li>⏱ Horário: Seg - Sex | 09:00 - 17:00</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-semibold">Redes</h4>
+        <div class="mt-3 flex gap-3">
+          <a href="#" class="bg-slate-800 p-2 rounded-md">Instagram</a>
+          <a href="#" class="bg-slate-800 p-2 rounded-md">Facebook</a>
+          <a href="#" class="bg-slate-800 p-2 rounded-md">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-slate-800/50">
+      <div class="max-w-7xl mx-auto px-6 py-4 text-sm text-slate-500 text-center">
+        © <span id="year"></span> FormaTech Angola — Todos os direitos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    // mobile menu toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuBtn?.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
