@@ -1,6 +1,6 @@
--- MySQL DDL: cria o schema base
-CREATE DATABASE IF NOT EXISTS db_formHub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE db_formHub;
+-- -- MySQL DDL: cria o schema base
+-- CREATE DATABASE IF NOT EXISTS db_formHub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- USE db_formHub;
 
 CREATE TABLE users (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,

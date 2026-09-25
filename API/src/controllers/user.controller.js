@@ -11,7 +11,7 @@ const login = async (req, res) => {
 
     // 1️⃣ Buscar o usuário
     const rows = await query(
-      "SELECT id, password_salt, password_hash, role FROM users WHERE email = ?",
+      "SELECT id, password_salt, password_hash, role FROM system_users WHERE email = ?",
       [email]
     );
 
@@ -85,7 +85,7 @@ const register = async (req, res) => {
       res.status(400).json({ error: "email e senha obrigatorios!" });
     }
 
-    const rows = await query("SELECT * FROM users WHERE email = ?", [email]);
+    const rows = await query("SELECT * FROM system_users WHERE email = ?", [email]);
 
     // console.log(rows[0]);
 
@@ -150,7 +150,7 @@ const getuserInfo = async (req, res) => {
     const { email } = req.body;
 
 
-    const result = await query("SELECT * FROM users WHERE email = ? LIMIT 1", [email]);
+    const result = await query("SELECT * FROM system_users WHERE email = ? LIMIT 1", [email]);
 
     if (result.length > 0) {
       res.status(200).json(result)
@@ -170,7 +170,7 @@ const getuserInfo = async (req, res) => {
 const getUsers = async (req, res) => {
   try {
 
-    const result = await query("SELECT id, name, email, photo, role, active as status, created_at FROM users LIMIT 100", []);
+    const result = await query("SELECT id, name, email, photo, role, active as status, created_at FROM system_users LIMIT 100", []);
 
     if (result.length > 0) {
       res.status(200).json(result)
@@ -191,7 +191,7 @@ const deleteUser = async (req, res) => {
 
     const { id } = req.params;
 
-    const result = await query("DELETE FROM users WHERE id = ?", [id]);
+    const result = await query("DELETE FROM system_users WHERE id = ?", [id]);
 
     if (result.affectedRows > 0) {
       res.status(200).json({
@@ -216,7 +216,7 @@ const updateUserStatus = async (req, res) => {
 
     const { id, status } = req.body;
 
-    const result = await query("UPDATE users SET status = ? WHERE id = ?", [status, id]);
+    const result = await query("UPDATE system_users SET status = ? WHERE id = ?", [status, id]);
 
     if (result.affectedRows > 0) {
       res.status(200).json({

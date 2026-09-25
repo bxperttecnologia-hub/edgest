@@ -9,6 +9,8 @@ import {
   InfoIcon,
   Edit,
   Loader,
+  MoreVertical,
+  Info,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,7 +46,16 @@ import { ViewEnrollmentsModal } from "@/components/deleteOptions";
 import { useToast } from "@/hooks/use-toast";
 import { getCourse } from "@/services/coursesService";
 import { deleteStudent, getStudents } from "@/services/studentService";
-import { getClasses, getStudentEnrollments } from "@/services/enrollmentsService";
+import {
+  getClasses,
+  getStudentEnrollments,
+} from "@/services/enrollmentsService";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useDebounce } from "use-debounce";
 
 export default function Students() {
@@ -193,29 +204,39 @@ export default function Students() {
   };
 
   const deletingEvent = (id?: number) => {
-    if (id) setSelectedStudents([id]);
-    setOpenDialogDelete(true);
+    if (!id) return;
+
+    setSelectedStudents((prev) => {
+      // evita recriar estado desnecessariamente (causa flicker)
+      if (prev.length === 1 && prev[0] === id) return prev;
+      return [id];
+    });
+
+    // abre depois do state estabilizar
+    requestAnimationFrame(() => {
+      setOpenDialogDelete(true);
+    });
   };
 
   const loadGetStudentEnrollments = async (id) => {
-    const data = await getStudentEnrollments(id);
-  
-      if (data) {
-        setEnrollments(data);
-      } else {
-        toast({
-          title: "Erro ao buscar inscrições!",
-          variant: "destructive",
-        });
-      }
-  }
+    const { data } = await getStudentEnrollments(id);
+
+    if (data) {
+      setEnrollments(data);
+    } else {
+      toast({
+        title: "Erro ao buscar inscrições!",
+        variant: "destructive",
+      });
+    }
+  };
 
   const onRemoveEvent = async (id?: number) => {
     await loadGetStudentEnrollments(id);
+    setStudentID(id);
     setTimeout(() => {
-      setStudentID(id)
       setOpenDialogEnroll1(true);
-    }, 200);
+    }, 500);
   };
 
   const editingEvent = (id: number) => {
@@ -271,32 +292,51 @@ export default function Students() {
     });
   };
 
+  const addEnrollmentI = (id: number) => {
+    setSelectedStudents(id);
+    setTimeout(() => {
+      setOpenDialogEnroll(true);
+    }, 1000);
+  };
+
   // ========================= DELETE DIALOG =========================
   const DeleteDialog = () => (
-    <Dialog open={openDialogDelete} onOpenChange={setOpenDialogDelete}>
-      <DialogContent className="sm:max-w-[500px] max-h-[25vh] overflow-hidden">
+    <Dialog
+      open={openDialogDelete}
+      onOpenChange={(open) => {
+        if (!open) {
+          setTimeout(() => {
+            setOpenDialogDelete(false);
+          }, 80);
+        } else {
+          setOpenDialogDelete(true);
+        }
+      }}
+    >
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle className="DialogTitle flex items-center gap-2">
-            <Trash size={30} color="red" /> Apagar estudante!
+          <DialogTitle className="flex items-center gap-2">
+            <Trash size={24} color="red" />
+            Apagar estudante
           </DialogTitle>
-          <hr />
         </DialogHeader>
 
-        <p className="text-center">
+        <p className="text-center text-sm text-muted-foreground py-3">
           Tem certeza que pretende eliminar{" "}
           {selectedStudents.length > 1 ? "estes estudantes" : "este estudante"}?
         </p>
 
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center gap-3 pt-2">
           <Button
             onClick={deleteStudentData}
-            className="w-20 h-4 bg-green-600 hover:bg-green-900"
+            className="bg-green-600 hover:bg-green-700"
           >
             Sim
           </Button>
+
           <Button
             onClick={() => setOpenDialogDelete(false)}
-            className="w-20 h-4 bg-red-600 hover:bg-red-900"
+            className="bg-red-600 hover:bg-red-700"
           >
             Cancelar
           </Button>
@@ -314,7 +354,7 @@ export default function Students() {
         isOpen={openDialogEnroll1}
         enrollments={enrollments}
         onClose={setOpenDialogEnroll1}
-        refresh={loadGetStudentEnrollments(studentID)}
+        refresh={() => loadGetStudentEnrollments(studentID)}
         onDelete={deleteStudentData}
       />
 
@@ -337,6 +377,7 @@ export default function Students() {
           setSelectedData(null);
           setIsFormOpen(false);
         }}
+        studentID={studentID}
         refresh={getStudentsData}
       />
 
@@ -514,25 +555,69 @@ export default function Students() {
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button variant="link" className="ml-2" size="sm">
-                            <InfoIcon />
-                          </Button>
-                          <Button
-                            variant="secondary"
-                            className="ml-2"
-                            size="sm"
-                            onClick={() => editingEvent(student.id)}
-                          >
-                            <Edit />
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            className="ml-2"
-                            size="sm"
-                            onClick={() => onRemoveEvent(student.id)}
-                          >
-                            <Trash />
-                          </Button>
+                          <TooltipProvider>
+                            <div className="flex justify-end gap-2">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={() =>
+                                      addEnrollmentI(Number(student.id))
+                                    }
+                                    aria-label="Matricular aluno"
+                                  >
+                                    <Book className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  Matricular aluno
+                                </TooltipContent>
+                              </Tooltip>
+
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={() => editingEvent(student.id)}
+                                    aria-label="Editar aluno"
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Editar aluno</TooltipContent>
+                              </Tooltip>
+
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={() => onRemoveEvent(student.id)}
+                                    aria-label="Ver detalhes"
+                                  >
+                                    <Info className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Ver detalhes</TooltipContent>
+                              </Tooltip>
+
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => deletingEvent(student.id)}
+                                    aria-label="Eliminar aluno"
+                                  >
+                                    <Trash className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Eliminar aluno</TooltipContent>
+                              </Tooltip>
+                            </div>
+                          </TooltipProvider>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -620,25 +705,55 @@ export default function Students() {
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button variant="link" className="ml-2" size="sm">
-                            <InfoIcon />
-                          </Button>
-                          <Button
-                            variant="secondary"
-                            className="ml-2"
-                            size="sm"
-                            onClick={() => editingEvent(student.id)}
-                          >
-                            <Edit />
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            className="ml-2"
-                            size="sm"
-                            onClick={() => deletingEvent(student.id)}
-                          >
-                            <Trash />
-                          </Button>
+                          <TooltipProvider>
+                            <div className="flex justify-end gap-2">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={() =>
+                                      addEnrollmentI(Number(student.id))
+                                    }
+                                    aria-label="Matricular aluno"
+                                  >
+                                    <Book className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  Matricular aluno
+                                </TooltipContent>
+                              </Tooltip>
+
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={() => editingEvent(student.id)}
+                                    aria-label="Editar aluno"
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Editar aluno</TooltipContent>
+                              </Tooltip>
+
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => deletingEvent(student.id)}
+                                    aria-label="Eliminar aluno"
+                                  >
+                                    <Trash className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Eliminar aluno</TooltipContent>
+                              </Tooltip>
+                            </div>
+                          </TooltipProvider>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -690,7 +805,7 @@ export default function Students() {
         </div>
       </div>
 
-      {isLoading && <Loader text="Carregando produtos..." />}
+      {isLoading && <Loader text="Carregando estudantes..." />}
     </div>
   );
 }

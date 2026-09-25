@@ -6,7 +6,7 @@ const insertUser = async (name, email, password, role) => {
 
     const { salt, hash } = await hashPassword(password);
     const result = await db.query(
-      "INSERT INTO users (name, email, password_hash, password_salt, role) VALUES (?,?,?,?,?)",
+      "INSERT INTO system_users (name, email, password_hash, password_salt, role) VALUES (?,?,?,?,?)",
       [name, email, hash, salt, role || "student"]
     );
 
@@ -14,7 +14,7 @@ const insertUser = async (name, email, password, role) => {
 }
 
 const getUserData = async (email) => {
-  const result = await query("SELECT * FROM users")
+  const result = await query("SELECT * FROM system_users")
 }
 
 // const getLastID = async () => {

@@ -1,4 +1,4 @@
-import { Plus, BookOpen, Trash, Trash2 } from "lucide-react";
+import { Plus, BookOpen, Trash, Trash2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -35,7 +35,15 @@ import {
   addEnrollment,
   deleteStudentEnrollments,
   getStudentEnrollments,
+  generateCertificate,
 } from "@/services/enrollmentsService";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import file_pdf from "@/assets/pdf.png";
 
 interface ViewEnrollmentsModalProps {
   isOpen: boolean;
@@ -51,7 +59,7 @@ export const ViewEnrollmentsModal = ({
   onClose,
   enrollments,
   refresh,
-  onDelete
+  onDelete,
 }: ViewEnrollmentsModalProps) => {
   const { toast } = useToast();
 
@@ -63,19 +71,47 @@ export const ViewEnrollmentsModal = ({
     }
   };
 
-  const onRemove = async (id?: number) => {
-    const data = await deleteStudentEnrollments(id);
+  // função react
+  const onRemove = async (id) => {
+    try {
+      const data = await deleteStudentEnrollments(id);
 
-    if (data) {
+      if (data?.success) {
+        toast({
+          title: "Apagar inscrição",
+          description: data?.message || "Sucesso!",
+        });
+
+        refresh();
+      } else {
+        toast({
+          title: "Erro ao apagar inscrição!",
+          description: data?.message || "Tente novamente.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+
       toast({
-        title: "Apagar inscrição",
-        description: "Sucesso!"
+        title: "Erro interno!",
+        description: "Não foi possível apagar a inscrição.",
+        variant: "destructive",
       });
+    }
+  };
 
-      refresh()
-    } else {
+  const handleCertificate = async (id: number) => {
+    try {
+      const url = await generateCertificate(id);
+      window.open(url, "_blank");
+      console.log(id)
+    } catch (err: any) {
+      console.error(err);
       toast({
-        title: "Erro ao buscar inscrições!",
+        title: "Erro ao gerar Certificado",
+        description:
+          err.response?.data?.message || err.message || "Tente novamente",
         variant: "destructive",
       });
     }
@@ -96,6 +132,7 @@ export const ViewEnrollmentsModal = ({
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">
+                  <TableHead>Código</TableHead>
                   <TableHead>Turma</TableHead>
                   <TableHead>Curso</TableHead>
                   <TableHead>Status</TableHead>
@@ -109,6 +146,9 @@ export const ViewEnrollmentsModal = ({
                     {enrollments.map((e) => (
                       <TableRow key={e.id} className="group">
                         <TableCell className="font-medium">{e.code}</TableCell>
+                        <TableCell className="font-medium">
+                          {e.class_name}
+                        </TableCell>
                         <TableCell className="text-muted-foreground font-mono text-sm">
                           {e.course}
                         </TableCell>
@@ -128,29 +168,42 @@ export const ViewEnrollmentsModal = ({
                           {formatDateForInput(e.created_at)}
                         </TableCell>
                         <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            {/* <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => onToggleStatus(user.id)}
-                          title={
-                            user.status === "active" ? "Desativar" : "Ativar"
-                          }
-                        >
-                          {user.status === "active" ? (
-                            <ToggleRight className="h-4 w-4 text-success" />
-                          ) : (
-                            <ToggleLeft className="h-4 w-4 text-muted-foreground" />
-                          )}
-                        </Button> */}
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => onRemove(e.id)}
-                              title="Remover"
-                            >
-                              <Trash2 className="h-4 w-4 text-destructive" />
-                            </Button>
+                          <div className="flex items-center justify-end gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button variant="ghost" size="icon">
+                                    <img
+                                      src={file_pdf}
+                                      className="w-5 h-5"
+                                      alt="PDF"
+                                      onClick={() => handleCertificate(e.id)}
+                                    />
+                                  </Button>
+                                </TooltipTrigger>
+
+                                <TooltipContent>
+                                  <p>Emitir certificado</p>
+                                </TooltipContent>
+                              </Tooltip>
+
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => onRemove(e.id)}
+                                    aria-label="Remover"
+                                  >
+                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                  </Button>
+                                </TooltipTrigger>
+
+                                <TooltipContent>
+                                  <p>Remover</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
                           </div>
                         </TableCell>
                       </TableRow>

@@ -1,0 +1,14 @@
+on_http_request:
+  # redirect users to Google to log in
+  - actions:
+    - type: oauth
+      config:
+        provider: google
+
+  # allow logins *only* from acme.com
+  - expressions:
+    - "!actions.ngrok.oauth.identity.email.endsWith('@acme.com')"
+    actions:
+    - type: deny
+
+# 2H36yWvtutq3lOL5ON49YLBijeW_7xeKRUj1g9zG17apTYGDT

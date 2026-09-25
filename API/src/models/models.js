@@ -5,10 +5,10 @@ const util = require("util");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 
-  const leadingZero = (num, size = 3) => {
-    const s = String(num ?? "");
-    return s.padStart(size, "0");
-  };
+const leadingZero = (num, size = 3) => {
+  const s = String(num ?? "");
+  return s.padStart(size, "0");
+};
 
 const moment = require("moment-timezone");
 
@@ -26,7 +26,7 @@ const formatter = new Intl.DateTimeFormat("pt-PT", {
 
 const query = util.promisify(db.query).bind(db);
 const parts = Object.fromEntries(
-  formatter.map(({ type, value }) => [type, value])
+  formatter.map(({ type, value }) => [type, value]),
 );
 
 const currentDate = `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
@@ -86,6 +86,13 @@ function formatCurrency(value) {
   );
 }
 
+function formatCurrency1(value) {
+  return new Intl.NumberFormat("pt-PT", {
+    style: "currency",
+    currency: "AOA",
+  }).format(value);
+}
+
 // === Helpers ===
 const statusColor = (status) => {
   switch (status.toLowerCase()) {
@@ -103,6 +110,25 @@ const statusColor = (status) => {
       return "#6b7280"; // cinza
   }
 };
+
+const getDocumentTypeId = (type) => {
+  switch (type) {
+    case "BI":
+      return 1;
+    case "Passaporte":
+      return 4;
+    default:
+      return 11;
+  }
+};
+
+// ======================================================
+// NUMERO POR EXTENSO
+// ======================================================
+
+function numeroPorExtenso(valor) {
+  return `${formatCurrency1(valor)}`;
+}
 
 module.exports = {
   db,
@@ -122,5 +148,8 @@ module.exports = {
   util,
   jwt,
   statusColor,
-  formatCurrency
+  formatCurrency,
+  formatCurrency1,
+  numeroPorExtenso,
+  getDocumentTypeId
 };

@@ -1,6 +1,23 @@
-import { Download, FileText, TrendingUp, Users, DollarSign, Calendar } from "lucide-react";
+import {
+  Download,
+  FileText,
+  TrendingUp,
+  Users,
+  DollarSign,
+  Calendar,
+} from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import { useReports } from "@/hooks/useReports";
+import { useExportReport } from "@/hooks/useExportReport";
 
 const reportCategories = [
   {
@@ -9,53 +26,69 @@ const reportCategories = [
     description: "Análises de receitas, despesas e fluxo de caixa",
     icon: DollarSign,
     reports: [
-      { name: "Receitas Mensais", description: "Detalhamento de pagamentos recebidos" },
-      { name: "Pagamentos Atrasados", description: "Controlo de inadimplência" },
-      { name: "Previsão de Receitas", description: "Projeção baseada em matrículas" },
-      { name: "Extrato por Curso", description: "Receitas agrupadas por curso" },
+      { name: "Receitas Mensais" },
+      { name: "Pagamentos Atrasados" },
+      { name: "Previsão de Receitas" },
+      { name: "Extrato por Curso" },
     ],
   },
   {
     id: "academic",
     title: "Relatórios Académicos",
-    description: "Desempenho, presenças e progressão dos estudantes",
+    description: "Desempenho e progressão dos estudantes",
     icon: Users,
     reports: [
-      { name: "Taxa de Aprovação", description: "Análise por curso e turma" },
-      { name: "Frequência de Presenças", description: "Controlo de assiduidade" },
-      { name: "Desempenho por Módulo", description: "Notas e avaliações" },
-      { name: "Diplomas Emitidos", description: "Histórico de conclusões" },
+      { name: "Taxa de Aprovação" },
+      { name: "Frequência de Presenças" },
+      { name: "Desempenho por Módulo" },
+      { name: "Diplomas Emitidos" },
     ],
   },
   {
     id: "enrollment",
     title: "Relatórios de Matrícula",
-    description: "Análise de inscrições e tendências de procura",
+    description: "Análise de inscrições e tendências",
     icon: TrendingUp,
     reports: [
-      { name: "Matrículas por Período", description: "Evolução temporal de inscrições" },
-      { name: "Cursos Mais Procurados", description: "Ranking de popularidade" },
-      { name: "Taxa de Conversão", description: "De interessados a matriculados" },
-      { name: "Ocupação de Turmas", description: "Análise de vagas disponíveis" },
+      { name: "Matrículas por Período" },
+      { name: "Cursos Mais Procurados" },
+      { name: "Taxa de Conversão" },
+      { name: "Ocupação de Turmas" },
     ],
   },
   {
     id: "operational",
     title: "Relatórios Operacionais",
-    description: "Gestão de recursos e calendário académico",
+    description: "Gestão e organização académica",
     icon: Calendar,
     reports: [
-      { name: "Agenda de Aulas", description: "Calendário completo por turma" },
-      { name: "Utilização de Salas", description: "Ocupação de espaços físicos" },
-      { name: "Carga Horária de Formadores", description: "Distribuição de aulas" },
-      { name: "Documentos Pendentes", description: "Controlo administrativo" },
+      { name: "Agenda de Aulas" },
+      { name: "Utilização de Salas" },
+      { name: "Carga Horária de Formadores" },
+      { name: "Documentos Pendentes" },
     ],
   },
 ];
 
 export default function Reports() {
+  const { data, loading } = useReports();
+  const { exportReport } = useExportReport();
+
+  const handleExport = async (type: string) => {
+    await exportReport(type);
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6 text-center text-muted-foreground">
+        A carregar relatórios...
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
+      {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Relatórios</h1>
@@ -63,15 +96,21 @@ export default function Reports() {
             Análises e exportações de dados do sistema
           </p>
         </div>
-        <Button className="gap-2">
+
+        <Button
+          className="gap-2"
+          onClick={() => alert("Em breve: relatório customizado")}
+        >
           <FileText className="h-4 w-4" />
           Relatório Personalizado
         </Button>
       </div>
 
+      {/* CARDS */}
       <div className="grid gap-6">
         {reportCategories.map((category) => {
           const Icon = category.icon;
+
           return (
             <Card key={category.id} className="shadow-card">
               <CardHeader>
@@ -79,12 +118,27 @@ export default function Reports() {
                   <div className="p-2 rounded-lg bg-accent">
                     <Icon className="h-5 w-5 text-primary" />
                   </div>
+
                   <div className="flex-1">
                     <CardTitle>{category.title}</CardTitle>
-                    <CardDescription className="mt-1">{category.description}</CardDescription>
+                    <CardDescription className="mt-1">
+                      {category.description}
+                    </CardDescription>
                   </div>
+
+                  {/* 🔥 EXPORT GLOBAL DA CATEGORIA */}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleExport(category.id)}
+                    className="gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    Exportar
+                  </Button>
                 </div>
               </CardHeader>
+
               <CardContent>
                 <div className="grid gap-3 md:grid-cols-2">
                   {category.reports.map((report) => (
@@ -94,11 +148,19 @@ export default function Reports() {
                     >
                       <div className="flex-1">
                         <p className="font-medium">{report.name}</p>
-                        <p className="text-sm text-muted-foreground mt-0.5">
-                          {report.description}
+
+                        {/* 🔥 DADOS REAIS (se quiseres mostrar preview) */}
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {data?.[category.id]?.length || 0} registros
                         </p>
                       </div>
-                      <Button variant="ghost" size="sm" className="gap-2">
+
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-2"
+                        onClick={() => handleExport(category.id)}
+                      >
                         <Download className="h-4 w-4" />
                         Gerar
                       </Button>

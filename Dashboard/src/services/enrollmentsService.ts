@@ -1,4 +1,5 @@
 const apiUrl = import.meta.env.VITE_API_URL;
+import { api } from "@/hooks/api";
 const token = localStorage.getItem("token");
 
 
@@ -15,9 +16,9 @@ export const getTeachers = async (playLoad) => {
     }
   );
 
-    const data = await res.json();
-    if (!res) false;
-    return data;
+  const data = await res.json();
+  if (!res) false;
+  return data;
 };
 
 export const getClasses = async () => {
@@ -85,36 +86,82 @@ export const addEnrollment = async (payload) => {
       body: JSON.stringify(payload),
     });
 
-    const data = await res.json(); // pega o JSON do servidor
+    // =========================================
+    // LER COMO TEXTO PRIMEIRO (SEGURANÇA)
+    // =========================================
+    const text = await res.text();
 
+    let data = null;
+
+    // =========================================
+    // TENTAR CONVERTER PARA JSON
+    // =========================================
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch (e) {
+      console.error("Resposta inválida do backend:", text);
+
+      throw new Error(
+        "Resposta inválida do servidor (não é JSON)",
+      );
+    }
+
+    // =========================================
+    // TRATAR ERROS HTTP
+    // =========================================
     if (!res.ok) {
-      // lança erro com a mensagem retornada da API
-      throw new Error(data?.error || "Erro ao adicionar Turma");
+      throw new Error(
+        data?.error ||
+        data?.message ||
+        "Erro ao adicionar Turma",
+      );
     }
 
     return data;
-  } catch (err: any) {
+  } catch (err) {
     console.error("addEnrollment error:", err);
-    throw new Error(err.message || "Erro ao adicionar Turma");
+
+    throw new Error(
+      err.message || "Erro ao adicionar Turma",
+    );
   }
 };
 
 
 export const getStudentEnrollments = async (id) => {
-  const res = await fetch(
-    `${apiUrl}/enrollments/studentEnrollment/${id}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
-    }
-  );
+  try {
+    const res = await fetch(
+      `${apiUrl}/enrollments/studentEnrollment/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      }
+    );
 
     const data = await res.json();
-    if (!res) false;
-    return data;
+
+    if (!res.ok) {
+      return {
+        success: false,
+        message: data?.message || "Erro ao buscar matrículas",
+      };
+    }
+
+    return {
+      success: true,
+      data: data?.data,
+    };
+  } catch (error) {
+    console.error("getStudentEnrollments error:", error);
+
+    return {
+      success: false,
+      message: "Erro de rede ou servidor",
+    };
+  }
 };
 
 export const deleteStudentEnrollments = async (id) => {
@@ -129,7 +176,37 @@ export const deleteStudentEnrollments = async (id) => {
     }
   );
 
-    const data = await res.json();
-    if (!res) false;
-    return data;
+  const data = await res.json();
+  if (!res) false;
+  return data;
+};
+
+
+export const generateCertificate = async (id: number | string): Promise<string> => {
+  try {
+    if (!id) {
+      throw new Error("enrollmentId é obrigatório");
+    }
+
+    const { data } = await api.post(
+      `/enrollments/generateCertificate/${id}`
+    );
+
+    const certificateUrl = data?.certificateUrl || data?.url;
+
+    if (!certificateUrl) {
+      throw new Error("Resposta inválida: CertificateUrl não encontrada");
+    }
+
+    return certificateUrl;
+  } catch (err: any) {
+    const message =
+      err?.response?.data?.message ||
+      err?.message ||
+      "Erro ao gerar fatura";
+
+    console.error("invoiceService.generateInvoice:", message);
+
+    throw new Error(message);
+  }
 };

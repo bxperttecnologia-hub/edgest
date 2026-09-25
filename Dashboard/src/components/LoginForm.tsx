@@ -1,8 +1,10 @@
+"use client";
+import * as React from "react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "./ui/checkbox";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff, Mail, Lock, Regex } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, Regex, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -10,7 +12,7 @@ export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [keepSession, setKeepSession] = useState(false);
+  const [keepSession, setKeepSession] = React.useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -39,6 +41,15 @@ export const LoginForm = () => {
 
   const handleLogin = async () => {
     try {
+      if (!email?.trim() || !password) {
+        toast({
+          title: "Campos obrigatórios",
+          description: "Informe o email e a senha.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const response = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
         headers: {
@@ -46,7 +57,7 @@ export const LoginForm = () => {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          email: email?.trim(),
+          email: email.trim(),
           password,
           keepSession,
         }),
@@ -54,55 +65,59 @@ export const LoginForm = () => {
 
       let data = null;
 
-      // 🔎 Tenta converter resposta para JSON apenas se existir conteúdo
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        data = await response.json();
+      // 🔎 Tenta ler JSON com fallback seguro
+      try {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          data = await response.json();
+        }
+      } catch (err) {
+        console.warn("Resposta não é JSON válido");
       }
 
-      // ❌ Se status HTTP não for OK
+      // ❌ Erros HTTP (401, 500, etc)
       if (!response.ok) {
         toast({
           title: "Erro no login",
           description:
-            data?.message || `Erro ${response.status}: ${response.statusText}`,
+            data?.message ||
+            `Erro ${response.status}: ${response.statusText || "Falha no servidor"}`,
           variant: "destructive",
         });
         return;
       }
 
-      // 🔐 Validação obrigatória
+      // 🔐 Garantir estrutura esperada
       if (!data?.token || !data?.user) {
-        toast({
-          title: "Erro inesperado",
-          description: "Resposta inválida do servidor.",
-          variant: "destructive",
-        });
-        return;
+        throw new Error("Resposta inválida do servidor");
       }
 
-      // 💾 Escolhe tipo de armazenamento
+      // 💾 Armazenamento seguro
       const storage = keepSession ? localStorage : sessionStorage;
 
       storage.setItem("token", data.token);
       storage.setItem("user", JSON.stringify(data.user));
-      storage.setItem("email", data.user.email);
+      storage.setItem("email", data.user.email || "");
       storage.setItem("rememberMe", String(keepSession));
 
+      // ✅ Feedback ao usuário
       toast({
-        title: "Login realizado com sucesso",
-        description: `Bem-vindo, ${data.user.name}!`,
+        title: "Login realizado",
+        description: `Bem-vindo, ${data.user.name || "usuário"}!`,
       });
 
-      // 🔄 Redirecionamento mais moderno
-      window.location.href = "/dashboard";
+      // 🔄 Pequeno delay melhora UX (toast aparece antes de redirecionar)
+      setTimeout(() => {
+        window.location.replace("/dashboard");
+      }, 800);
     } catch (error) {
       console.error("Erro inesperado no login:", error);
 
       toast({
         title: "Erro de conexão",
         description:
-          "Não foi possível conectar ao servidor. Verifique sua internet e tente novamente.",
+          error.message ||
+          "Não foi possível conectar ao servidor. Tente novamente.",
         variant: "destructive",
       });
     }
@@ -167,7 +182,6 @@ export const LoginForm = () => {
             className="pl-10 h-12 w-[90%] rounded-full border-border bg-[]"
           />
         </div>
-
         <div className="relative bg-blue-100 px-4 rounded-full">
           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
@@ -190,15 +204,27 @@ export const LoginForm = () => {
           </button>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-3">
           <Checkbox
             id="terms1"
             checked={keepSession}
-            onCheckedChange={setKeepSession}
-          />
+            onCheckedChange={(value) => setKeepSession(!!value)}
+            className="
+      h-5 w-5
+      border border-gray-400
+      rounded-sm
+      bg-white
+      flex items-center justify-center
+      data-[state=checked]:bg-blue-600
+      data-[state=checked]:border-blue-600
+    "
+          >
+            <Check className="h-4 w-4 text-white" />
+          </Checkbox>
+
           <label
             htmlFor="terms1"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="text-sm font-medium cursor-pointer text-gray-700"
           >
             Manter sessão ativa
           </label>
@@ -210,7 +236,6 @@ export const LoginForm = () => {
         >
           Entrar
         </Button>
-
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-border" />

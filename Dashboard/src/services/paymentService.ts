@@ -10,6 +10,16 @@ export const getPayments = async (status?: string) => {
   return data;
 };
 
+// Função para buscar pagamentos
+export const getEnrollments = async (status?: string) => {
+  const params: any = {};
+  if (status) params.status = status;
+
+  // axios usa `params` para query string
+  const { data } = await api.get("/payments/enrollments", { params });
+  return data;
+};
+
 
 // Função para marcar pagamento como pago
 export const payPayment = async (id: number | string, method?: string, transaction_reference?: string) => {
@@ -17,12 +27,29 @@ export const payPayment = async (id: number | string, method?: string, transacti
   return data;
 };
 
-// Função para marcar pagamento como pago
 export const exportPayments = async () => {
-  const { data } = await api.get("/payments/export");
-  return data;
-};
+  const res = await api.get("/payments/export", {
+    responseType: "blob",
+  });
 
+  // criar URL temporária do ficheiro
+  const url = window.URL.createObjectURL(new Blob([res.data]));
+
+  const link = document.createElement("a");
+  link.href = url;
+
+  // nome do ficheiro
+  link.setAttribute(
+    "download",
+    `relatorio_pagamentos_${new Date().toISOString().split("T")[0]}.xlsx`,
+  );
+
+  document.body.appendChild(link);
+  link.click();
+
+  link.remove();
+  window.URL.revokeObjectURL(url);
+};
 
 export const invoiceService = {
   /**
@@ -32,12 +59,91 @@ export const invoiceService = {
    */
   generateInvoice: async (paymentId: number | string): Promise<string> => {
     try {
-      const { data } = await api.post(`/payments/generateInvoice/${paymentId}`);
-      if (data && data.invoiceUrl) return data.invoiceUrl;
-      throw new Error("Erro ao gerar fatura: resposta inválida");
+      if (!paymentId) {
+        throw new Error("paymentId é obrigatório");
+      }
+
+      const { data } = await api.post(
+        `/payments/generateInvoice/${paymentId}`
+      );
+
+      const invoiceUrl = data?.invoiceUrl || data?.url;
+
+      if (!invoiceUrl) {
+        throw new Error("Resposta inválida: invoiceUrl não encontrada");
+      }
+
+      console.log(invoiceUrl)
+      return invoiceUrl;
     } catch (err: any) {
-      console.error("invoiceService.generateInvoice:", err.response?.data || err.message);
-      throw err;
+      const message =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Erro ao gerar fatura";
+
+      console.error("invoiceService.generateInvoice:", message);
+
+      throw new Error(message);
     }
   },
+};
+
+// ======================================================
+// REGISTRAR PAGAMENTO
+// ======================================================
+export const registerPayment = async (payload: {
+  enrollment_id: number;
+  student_id: number;
+  amount: number;
+  status: string;
+}) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await api.post(
+      "/payments/pay",
+      payload, // ✅ aqui está a correção
+      {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    return res.data;
+  } catch (error: any) {
+    console.error("registerPayment error:", error);
+
+    throw (
+      error?.response?.data || {
+        success: false,
+        message: "Erro ao registrar pagamento",
+      }
+    );
+  }
+};
+
+// ======================================================
+// GERAR FATURA (BULK)
+// ======================================================
+export const generateBulkInvoice = async (payload: {
+  studentId: number;
+  enrollments: number[];
+  total: number;
+}) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await api.post("/invoices/bulk-create", payload, {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+        "Content-Type": "application/json",
+      },
+    });
+
+    return res.data;
+  } catch (error: any) {
+    throw error?.response?.data || error;
+  }
 };
